@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:nutri_revive/berat_sampah_page.dart';
 import 'package:nutri_revive/login_page.dart';
 
 class HomePage extends StatelessWidget {
@@ -176,10 +177,28 @@ class HomePage extends StatelessWidget {
         ),
         child: InkWell(
           onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => const LoginPage()),
-            );
+            if (title == 'KELEMBAPAN') {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => const LoginPage()),
+              );
+            } else if (title == 'SUHU') {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const LoginPage()),
+              );
+            } else if (title == 'STOK SAMPAH') {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const BeratSampahPage()),
+              );
+            } else if (title == 'KADAR AIR') {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const LoginPage()),
+              );
+            }
           },
           child: Padding(
             padding: const EdgeInsets.all(8.0),
