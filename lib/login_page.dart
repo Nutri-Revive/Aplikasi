@@ -66,7 +66,7 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                     Image.asset(
                       'assets/trashbin.png', // Ganti dengan path gambar Anda
-                      height: 230.0, // Mengatur tinggi gambar
+                      height: 225.0, // Mengatur tinggi gambar
                       width: 160.0, // Mengatur lebar gambar
                       fit: BoxFit
                           .cover, // Mengatur bagaimana gambar menyesuaikan ruang yang tersedia

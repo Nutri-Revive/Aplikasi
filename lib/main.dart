@@ -1,9 +1,5 @@
 import 'package:flutter/material.dart';
-<<<<<<< HEAD
-import 'package:nutri_revive/berat_sampah_page.dart';
-=======
 import 'package:nutri_revive/loading_page.dart';
->>>>>>> d14e73a357126f4850fcdf88ff9ebe5f1f537ba1
 import 'package:nutri_revive/login_page.dart';
 
 void main() {
@@ -38,11 +34,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-<<<<<<< HEAD
-      home: const BeratSampahPage(),
-=======
       home: LoadingScreen(),
->>>>>>> d14e73a357126f4850fcdf88ff9ebe5f1f537ba1
     );
   }
 }
