@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:nutri_revive/loading_page.dart';
-import 'package:nutri_revive/login_page.dart';
+
 
 void main() {
   runApp(const MyApp());
