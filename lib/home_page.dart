@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:nutri_revive/berat_sampah_page.dart';
+import 'package:nutri_revive/integrasi_page.dart';
 import 'package:nutri_revive/login_page.dart';
-import 'package:nutri_revive/pengukur_kadar_air.dart';
 
 class HomePage extends StatelessWidget {
   @override
@@ -67,7 +67,7 @@ class HomePage extends StatelessWidget {
                 MaterialPageRoute(
                   // Buat rute baru menggunakan MaterialPageRoute
                   builder: (context) =>
-                      const LoginPage(), // Widget yang akan ditampilkan di rute baru
+                      const IntegrasiPage(), // Widget yang akan ditampilkan di rute baru
                 ),
               );
             },
@@ -181,8 +181,7 @@ class HomePage extends StatelessWidget {
             if (title == 'KELEMBAPAN') {
               Navigator.push(
                 context,
-                MaterialPageRoute(
-                    builder: (context) => const LoginPage()),
+                MaterialPageRoute(builder: (context) => const LoginPage()),
               );
             } else if (title == 'SUHU') {
               Navigator.push(
@@ -192,12 +191,13 @@ class HomePage extends StatelessWidget {
             } else if (title == 'STOK SAMPAH') {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => const BeratSampahPage()),
+                MaterialPageRoute(
+                    builder: (context) => const BeratSampahPage()),
               );
             } else if (title == 'KADAR AIR') {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => const PengukurKadarAir()),
+                MaterialPageRoute(builder: (context) => const LoginPage()),
               );
             }
           },
