@@ -34,9 +34,13 @@ class _PengukurKadarAirState extends State<PengukurKadarAir> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+
+
       backgroundColor: const Color(0xFF5C7557),
       body: Stack(
         children: <Widget>[
+
+          // Tombol Kembali
           Positioned(
             top: 65,
             left: 28,
@@ -54,6 +58,8 @@ class _PengukurKadarAirState extends State<PengukurKadarAir> {
               iconSize: 40,
             ),
           ),
+
+
           Positioned(
             top: MediaQuery.of(context).size.height / 2 - 250,
             left: MediaQuery.of(context).size.width / 2 - 133,
@@ -67,7 +73,16 @@ class _PengukurKadarAirState extends State<PengukurKadarAir> {
                   color: Color(0xFF687144),
                   width: 1,
                 ),
+                boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.3), // Warna bayangan
+                      spreadRadius: 2, // Seberapa jauh bayangan menyebar
+                      blurRadius: 20, // Seberapa kabur bayangan
+                      offset: Offset(0, 14), // Perpindahan bayangan (x, y)
+                    ),
+                  ],
               ),
+              
               child: Column(
                 children: [
                   Padding(
@@ -118,6 +133,8 @@ class _PengukurKadarAirState extends State<PengukurKadarAir> {
               ),
             ),
           ),
+
+
           Positioned(
             bottom: 275,
             left: 0,
@@ -125,6 +142,8 @@ class _PengukurKadarAirState extends State<PengukurKadarAir> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
+
+                // Tombol -
                 ElevatedButton(
                   onPressed: decreasewater,
                   child: Text(
@@ -144,6 +163,8 @@ class _PengukurKadarAirState extends State<PengukurKadarAir> {
                   ),
                 ),
                 SizedBox(width: 25),
+
+                // Nilai Tinggi Air
                 Container(
                   child: Center(
                     child: Text(
@@ -157,6 +178,8 @@ class _PengukurKadarAirState extends State<PengukurKadarAir> {
                   ),
                 ),
                 SizedBox(width: 25),
+
+                // Tombol +
                 ElevatedButton(
                   onPressed: increasewater,
                   child: Text(
@@ -167,8 +190,7 @@ class _PengukurKadarAirState extends State<PengukurKadarAir> {
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  style: ElevatedButton.styleFrom(
-                    
+                  style: ElevatedButton.styleFrom(  
                     backgroundColor: Color(0xFF8B9D88),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(20),
@@ -179,6 +201,8 @@ class _PengukurKadarAirState extends State<PengukurKadarAir> {
               ],
             ),
           ),
+
+          // Tombol Simpah
           Positioned(
             bottom: 180,
             left: 120,
@@ -202,6 +226,8 @@ class _PengukurKadarAirState extends State<PengukurKadarAir> {
               ),
             ),
           ),
+
+
         ],
       ),
     );

@@ -11,6 +11,7 @@ class _BeratSampahPageState extends State<BeratSampahPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+
       backgroundColor: const Color(0xFF5C7557),
       body: Stack(
         children: <Widget>[
@@ -26,6 +27,8 @@ class _BeratSampahPageState extends State<BeratSampahPage> {
               iconSize: 40,
             ),
           ),
+
+
           Positioned(
             top: MediaQuery.of(context).size.height / 2 - 250, // Atur posisi vertikal
             left: MediaQuery.of(context).size.width / 2 - 133, // Atur posisi horizontal
@@ -39,6 +42,14 @@ class _BeratSampahPageState extends State<BeratSampahPage> {
                   color: Color(0xFF687144),
                   width: 1,
                 ),
+                boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.3), // Warna bayangan
+                      spreadRadius: 2, // Seberapa jauh bayangan menyebar
+                      blurRadius: 20, // Seberapa kabur bayangan
+                      offset: Offset(0, 14), // Perpindahan bayangan (x, y)
+                    ),
+                  ],
               ),
               child: Column(
                 children: [
@@ -90,6 +101,8 @@ class _BeratSampahPageState extends State<BeratSampahPage> {
               ),
             ),
           ),
+
+
           Positioned(
             top: 560, // Atur posisi vertikal ke bawah
             left: MediaQuery.of(context).size.width / 2 - 130, // Atur posisi horizontal ke tengah
@@ -103,6 +116,7 @@ class _BeratSampahPageState extends State<BeratSampahPage> {
             ),
           ),
        
+
           Positioned(
             top: 600,
             height: 93,
@@ -113,7 +127,6 @@ class _BeratSampahPageState extends State<BeratSampahPage> {
               decoration: BoxDecoration(
                 color: Color(0XFF00B16B),
                 borderRadius: BorderRadius.circular(30.0),),
-              
               child: Align(
                 alignment: Alignment.center,
                 child: Text(
@@ -128,6 +141,7 @@ class _BeratSampahPageState extends State<BeratSampahPage> {
               ),
             ),
           ),
+
 
         ],
       ),
