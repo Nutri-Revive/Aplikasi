@@ -3,6 +3,8 @@ import 'package:nutri_revive/berat_sampah_page.dart';
 import 'package:nutri_revive/integrasi_page.dart';
 import 'package:nutri_revive/login_page.dart';
 import 'package:nutri_revive/pengukur_kadar_air.dart';
+import 'deteksi_suhu.dart';
+import 'monitoring_kelembapan.dart';
 
 class HomePage extends StatelessWidget {
   @override
@@ -182,12 +184,12 @@ class HomePage extends StatelessWidget {
             if (title == 'KELEMBAPAN') {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => const LoginPage()),
+                MaterialPageRoute(builder: (context) => const MonotoringKelembapanPage()),
               );
             } else if (title == 'SUHU') {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => const LoginPage()),
+                MaterialPageRoute(builder: (context) => const DeteksiSuhuPage()),
               );
             } else if (title == 'STOK SAMPAH') {
               Navigator.push(
