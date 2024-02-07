@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:nutri_revive/berat_sampah_page.dart';
 import 'package:nutri_revive/integrasi_page.dart';
-import 'package:nutri_revive/login_page.dart';
 import 'package:nutri_revive/pengukur_kadar_air.dart';
 import 'deteksi_suhu.dart';
 import 'monitoring_kelembapan.dart';

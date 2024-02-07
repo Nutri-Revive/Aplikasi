@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "188258888458",
+    "project_id": "nutri-revive",
+    "storage_bucket": "nutri-revive.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:188258888458:android:ec3728419eb5fd999ee8f3",
+        "android_client_info": {
+          "package_name": "com.example.nutri_revive"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCxJh_CeQUpWWI0aSnD0DwT4WRkq1ifb-c"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

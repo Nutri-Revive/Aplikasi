@@ -59,7 +59,6 @@ class _PengukurKadarAirState extends State<PengukurKadarAir> {
             ),
           ),
 
-
           Positioned(
             top: MediaQuery.of(context).size.height / 2 - 250,
             left: MediaQuery.of(context).size.width / 2 - 133,
