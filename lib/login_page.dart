@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:nutri_revive/get_data.dart';
 import 'package:nutri_revive/home_page.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -16,6 +19,50 @@ class _LoginPageState extends State<LoginPage> {
       true; // Variabel untuk melacak apakah password tersembunyi atau tidak
   bool _isUsernameFocused = false;
   bool _isPasswordFocused = false;
+
+  void _togglePasswordVisibility() {
+    setState(() {
+      _isPasswordFocused = !_isPasswordFocused;
+    });
+  }
+
+  // nyimpan error message
+  String _errorMessage = '';
+
+  void login() async {
+    final FirebaseAuth firebaseAuth = FirebaseAuth.instance;
+    String custName = _usernameController.text;
+    String custId = _passwordController.text;
+
+    try {
+      await firebaseAuth.signInWithEmailAndPassword(
+          email: custName, password: custId);
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      await prefs.setBool('isLoggedIn', true);
+      setState(() {
+        _errorMessage = '';
+      });
+
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => HomePage()),
+      );
+    } on FirebaseAuthException catch (error) {
+      setState(() {
+        if (error.code == 'user-not-found') {
+          _errorMessage = 'User tidak ditemukan';
+        } else if (error.code == 'wrong-password') {
+          _errorMessage = 'Password yang Anda masukkan salah';
+        } else {
+          _errorMessage = 'Terjadi kesalahan saat masuk: ${error.message}';
+        }
+      });
+    }
+  }
+
+  // Nyimpan email dan password dari field email dan password
+  String _custId = '';
+  String _custName = '';
 
   @override
   Widget build(BuildContext context) {
@@ -184,19 +231,7 @@ class _LoginPageState extends State<LoginPage> {
               SizedBox(height: 20.0),
               ElevatedButton(
                 onPressed: () {
-                  // Handle login logic here
-                  String username = _usernameController.text;
-                  String password = _passwordController.text;
-                  // For demonstration, just print the username and password
-                  print('Username: $username\nPassword: $password');
-                  // Navigate to home page
-                  Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) =>
-                          HomePage(), // Gantilah HomePage() dengan nama halaman home Anda
-                    ),
-                  );
+                  login();
                 },
                 style: ElevatedButton.styleFrom(
                   minimumSize:
