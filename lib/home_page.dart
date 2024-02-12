@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:nutri_revive/berat_sampah_page.dart';
 import 'package:nutri_revive/integrasi_page.dart';
@@ -5,7 +7,45 @@ import 'package:nutri_revive/pengukur_kadar_air.dart';
 import 'deteksi_suhu.dart';
 import 'monitoring_kelembapan.dart';
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  Future<DocumentSnapshot<Map<String, dynamic>>> getDataUser() async {
+    try {
+      final FirebaseAuth _auth = FirebaseAuth.instance;
+      User? user = _auth.currentUser;
+
+      // Menangani jika pengguna tidak terautentikasi
+      if (user == null) {
+        throw Exception('User is not authenticated');
+      }
+
+      // Mendapatkan ID pengguna
+      String userId = user.uid;
+
+      // Mendapatkan referensi ke koleksi "user_data"
+      CollectionReference users =
+          FirebaseFirestore.instance.collection('user_data');
+
+      // Mendapatkan dokumen pengguna berdasarkan ID
+      DocumentSnapshot<Map<String, dynamic>> doc = await users.doc(userId).get()
+          as DocumentSnapshot<Map<String, dynamic>>;
+
+      // Memeriksa apakah dokumen ada dan memiliki data sebelum mengembalikannya
+      if (doc.exists) {
+        return doc;
+      } else {
+        throw Exception('User data not found');
+      }
+    } catch (e) {
+      // Menangani kesalahan jika terjadi
+      throw Exception('Error getting user data: $e');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -30,14 +70,35 @@ class HomePage extends StatelessWidget {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      'Yusuf Danamik',
-                      style: TextStyle(
-                        fontSize: 15,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                      ),
-                    ),
+                    FutureBuilder(
+                        future: getDataUser(),
+                        builder: (context, snapshot) {
+                          if (snapshot.connectionState ==
+                              ConnectionState.waiting) {
+                            return CircularProgressIndicator(); // Menampilkan indikator loading saat data masih diambil
+                          } else {
+                            if (snapshot.hasError) {
+                              return Text('Error: ${snapshot.error}');
+                            } else {
+                              if (snapshot.hasData && snapshot.data!.exists) {
+                                Map<String, dynamic> userData =
+                                    snapshot.data!.data()!;
+                                String nama = userData['nama_lengkap'] ??
+                                    ''; // Mendapatkan alamat pengguna, jika ada
+                                return Text(
+                                  nama,
+                                  style: TextStyle(
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.white,
+                                  ),
+                                );
+                              } else {
+                                return Text('User data not found or empty');
+                              }
+                            }
+                          }
+                        }),
                   ],
                 ),
 
@@ -52,15 +113,34 @@ class HomePage extends StatelessWidget {
             ),
           ),
           SizedBox(height: 20),
-          Text(
-            'Blangkrueng,\nAceh Besar',
-            textAlign: TextAlign.center,
-            style: TextStyle(
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
-              color: Colors.white,
-            ),
-          ),
+          FutureBuilder(
+              future: getDataUser(),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return CircularProgressIndicator(); // Menampilkan indikator loading saat data masih diambil
+                } else {
+                  if (snapshot.hasError) {
+                    return Text('Error: ${snapshot.error}');
+                  } else {
+                    if (snapshot.hasData && snapshot.data!.exists) {
+                      Map<String, dynamic> userData = snapshot.data!.data()!;
+                      String address = userData['tempat_tinggal'] ??
+                          ''; // Mendapatkan alamat pengguna, jika ada
+                      return Text(
+                        address,
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                        ),
+                      );
+                    } else {
+                      return Text('User data not found or empty');
+                    }
+                  }
+                }
+              }),
           SizedBox(height: 40),
           ElevatedButton.icon(
             onPressed: () {
@@ -179,16 +259,18 @@ class HomePage extends StatelessWidget {
           borderRadius: BorderRadius.circular(12.0), // Radius border
         ),
         child: InkWell(
-          onTap: () {
+          onTap: () async {
             if (title == 'KELEMBAPAN') {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => const MonotoringKelembapanPage()),
+                MaterialPageRoute(
+                    builder: (context) => const MonotoringKelembapanPage()),
               );
             } else if (title == 'SUHU') {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => const DeteksiSuhuPage()),
+                MaterialPageRoute(
+                    builder: (context) => const DeteksiSuhuPage()),
               );
             } else if (title == 'STOK SAMPAH') {
               Navigator.push(
@@ -199,7 +281,8 @@ class HomePage extends StatelessWidget {
             } else if (title == 'KADAR AIR') {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => const PengukurKadarAir()),
+                MaterialPageRoute(
+                    builder: (context) => const PengukurKadarAir()),
               );
             }
           },

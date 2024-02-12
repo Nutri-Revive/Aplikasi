@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:nutri_revive/get_data.dart';
 import 'package:nutri_revive/home_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -31,7 +30,7 @@ class _LoginPageState extends State<LoginPage> {
 
   void login() async {
     final FirebaseAuth firebaseAuth = FirebaseAuth.instance;
-    String custName = _usernameController.text;
+    String custName = "${_usernameController.text}@gmail.com";
     String custId = _passwordController.text;
 
     try {
@@ -59,10 +58,6 @@ class _LoginPageState extends State<LoginPage> {
       });
     }
   }
-
-  // Nyimpan email dan password dari field email dan password
-  String _custId = '';
-  String _custName = '';
 
   @override
   Widget build(BuildContext context) {
