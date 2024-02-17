@@ -4,9 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:nutri_revive/berat_sampah_page.dart';
 import 'package:nutri_revive/integrasi_page.dart';
 import 'package:nutri_revive/pengukur_kadar_air.dart';
-import 'package:nutri_revive/test.dart';
 import 'deteksi_suhu.dart';
 import 'monitoring_kelembapan.dart';
+import 'package:firebase_database/firebase_database.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -14,6 +14,8 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  final DatabaseReference _database = FirebaseDatabase.instance.ref();
+
   Future<DocumentSnapshot<Map<String, dynamic>>> getDataUser() async {
     try {
       final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -166,15 +168,6 @@ class _HomePageState extends State<HomePage> {
               // Kolom untuk menampilkan teks
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                TextButton(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => RealtimeDataScreen()),
-                      );
-                    },
-                    child: Text('tekan')),
                 Text(
                   // Teks "CONTROL" dengan ukuran font 18
                   'CONTROL',
@@ -210,7 +203,7 @@ class _HomePageState extends State<HomePage> {
             ),
           ),
           SizedBox(
-            height: 30.0,
+            height: 50.0,
           ),
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -234,18 +227,18 @@ class _HomePageState extends State<HomePage> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  createCard(context, 'KELEMBAPAN', '+6%', '20 %RH',
-                      'assets/kelembapan.png'),
-                  createCard(context, 'SUHU', '+6%', '20°', 'assets/suhu.png'),
+                  createCard(context, 'KELEMBAPAN', 'assets/kelembapan.png',
+                      'kelembaban', '%RH'),
+                  createCard(context, 'SUHU', 'assets/suhu.png', 'suhu', '°'),
                 ],
               ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  createCard(context, 'STOK SAMPAH', '-7%', '30 KG',
-                      'assets/stok_sampah.png'),
-                  createCard(context, 'KADAR AIR', '+6%', '15 LITER',
-                      'assets/kadar_air.png'),
+                  createCard(context, 'STOK SAMPAH', 'assets/stok_sampah.png',
+                      'stok_sampah', 'KG'),
+                  createCard(context, 'KADAR AIR', 'assets/kadar_air.png',
+                      'kadar_air', 'LITER'),
                 ],
               )
             ],
@@ -255,8 +248,8 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Widget createCard(BuildContext context, String title, String change,
-      String value, String iconPath) {
+  Widget createCard(BuildContext context, String title, String iconPath,
+      String dataType, String unit) {
     return Container(
       width: 150.0,
       height: 100.0,
@@ -308,13 +301,6 @@ class _HomePageState extends State<HomePage> {
                       title,
                       style: TextStyle(color: Colors.white, fontSize: 10),
                     ),
-                    Align(
-                      alignment: Alignment.topRight,
-                      child: Text(
-                        change,
-                        style: TextStyle(color: Colors.white, fontSize: 10),
-                      ),
-                    ),
                   ],
                 ),
                 SizedBox(height: 10),
@@ -324,15 +310,34 @@ class _HomePageState extends State<HomePage> {
                     Image.asset(
                       iconPath,
                       height: 50.0,
-                      width: 50.0,
+                      width: 40.0,
                     ),
                     SizedBox(width: 10),
-                    Text(
-                      value,
-                      style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 15,
-                          fontWeight: FontWeight.bold),
+                    StreamBuilder(
+                      stream: _database.child(dataType).onValue,
+                      builder: (BuildContext context, AsyncSnapshot snapshot) {
+                        if (snapshot.hasData &&
+                            snapshot.data!.snapshot.value != null) {
+                          var data = snapshot.data!.snapshot.value;
+                          return Text(
+                            '$data $unit', // Menggabungkan nilai dan satuan tanpa spasi di antaranya
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 15,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          );
+                        } else {
+                          return Text(
+                            'Data not available',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 15,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          );
+                        }
+                      },
                     ),
                   ],
                 ),
