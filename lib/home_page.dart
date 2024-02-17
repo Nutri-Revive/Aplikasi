@@ -228,7 +228,7 @@ class _HomePageState extends State<HomePage> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   createCard(context, 'KELEMBAPAN', 'assets/kelembapan.png',
-                      'kelembaban', '%RH'),
+                      'kelembaban', ' %RH'),
                   createCard(context, 'SUHU', 'assets/suhu.png', 'suhu', '°'),
                 ],
               ),
@@ -236,9 +236,9 @@ class _HomePageState extends State<HomePage> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   createCard(context, 'STOK SAMPAH', 'assets/stok_sampah.png',
-                      'stok_sampah', 'KG'),
-                  createCard(context, 'KADAR AIR', 'assets/kadar_air.png',
-                      'kadar_air', 'LITER'),
+                      'stok_sampah', ' KG'),
+                  createCard(context, 'KETINGGIAN AIR', 'assets/kadar_air.png',
+                      'kadar_air', ' METER'),
                 ],
               )
             ],
@@ -281,7 +281,7 @@ class _HomePageState extends State<HomePage> {
                 MaterialPageRoute(
                     builder: (context) => const BeratSampahPage()),
               );
-            } else if (title == 'KADAR AIR') {
+            } else if (title == 'KETINGGIAN AIR') {
               Navigator.push(
                 context,
                 MaterialPageRoute(
@@ -320,7 +320,7 @@ class _HomePageState extends State<HomePage> {
                             snapshot.data!.snapshot.value != null) {
                           var data = snapshot.data!.snapshot.value;
                           return Text(
-                            '$data $unit', // Menggabungkan nilai dan satuan tanpa spasi di antaranya
+                            '$data$unit', // Menggabungkan nilai dan satuan tanpa spasi di antaranya
                             style: TextStyle(
                               color: Colors.white,
                               fontSize: 15,

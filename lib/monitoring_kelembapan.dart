@@ -109,7 +109,7 @@ class _MonotoringKelembapanPageState extends State<MonotoringKelembapanPage> {
                                       var data = snapshot.data!.snapshot.value;
 
                                       return Text(
-                                        '${data}% RH',
+                                        '${data} %RH',
                                         style: TextStyle(
                                             fontSize: 25.0,
                                             fontWeight: FontWeight.bold,

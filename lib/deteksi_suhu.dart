@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 
 class DeteksiSuhuPage extends StatefulWidget {
@@ -10,6 +11,8 @@ class DeteksiSuhuPage extends StatefulWidget {
 }
 
 class _DeteksiSuhuPageState extends State<DeteksiSuhuPage> {
+  final databaseReference = FirebaseDatabase.instance.ref();
+
   Future<List> getDataSuhu() async {
     final FirebaseAuth _auth = FirebaseAuth.instance;
     User? user = _auth.currentUser;
@@ -96,12 +99,27 @@ class _DeteksiSuhuPageState extends State<DeteksiSuhuPage> {
                                   height: 100.0,
                                 ),
                                 SizedBox(width: 8.0),
-                                Text(
-                                  '20°',
-                                  style: TextStyle(
-                                      fontSize: 50.0,
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.white),
+                                StreamBuilder(
+                                  stream: databaseReference
+                                      .child('suhu')
+                                      .onValue,
+                                  builder: (BuildContext context,
+                                      AsyncSnapshot snapshot) {
+                                    if (snapshot.hasData &&
+                                        snapshot.data!.snapshot.value != null) {
+                                      var data = snapshot.data!.snapshot.value;
+
+                                      return Text(
+                                        '${data}°',
+                                        style: TextStyle(
+                                            fontSize: 50.0,
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.white),
+                                      );
+                                    } else {
+                                      return Text('Loading...');
+                                    }
+                                  },
                                 ),
                               ],
                             ),

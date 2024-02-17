@@ -91,7 +91,7 @@ class _PengukurKadarAirState extends State<PengukurKadarAir> {
                   Padding(
                     padding: EdgeInsets.all(20.0),
                     child: Text(
-                      'Ketinggian Air',
+                      'KETINGGIAN AIR',
                       style: TextStyle(
                         fontSize: 25.0,
                         fontWeight: FontWeight.bold,
@@ -135,7 +135,7 @@ class _PengukurKadarAirState extends State<PengukurKadarAir> {
                                   waterNow = event.snapshot.value;
                                 });
                                 return Text(
-                                  '$data Meter',
+                                  '$data METER',
                                   style: TextStyle(
                                     fontSize: 32.0,
                                     fontWeight: FontWeight.bold,
