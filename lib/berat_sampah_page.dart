@@ -1,3 +1,4 @@
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 
 class BeratSampahPage extends StatefulWidget {
@@ -8,10 +9,10 @@ class BeratSampahPage extends StatefulWidget {
 }
 
 class _BeratSampahPageState extends State<BeratSampahPage> {
+  final databaseReference = FirebaseDatabase.instance.ref();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-
       backgroundColor: const Color(0xFF5C7557),
       body: Stack(
         children: <Widget>[
@@ -27,11 +28,11 @@ class _BeratSampahPageState extends State<BeratSampahPage> {
               iconSize: 40,
             ),
           ),
-
-
           Positioned(
-            top: MediaQuery.of(context).size.height / 2 - 250, // Atur posisi vertikal
-            left: MediaQuery.of(context).size.width / 2 - 133, // Atur posisi horizontal
+            top: MediaQuery.of(context).size.height / 2 -
+                250, // Atur posisi vertikal
+            left: MediaQuery.of(context).size.width / 2 -
+                133, // Atur posisi horizontal
             child: Container(
               width: 266,
               height: 307,
@@ -43,13 +44,13 @@ class _BeratSampahPageState extends State<BeratSampahPage> {
                   width: 1,
                 ),
                 boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withOpacity(0.3), // Warna bayangan
-                      spreadRadius: 2, // Seberapa jauh bayangan menyebar
-                      blurRadius: 20, // Seberapa kabur bayangan
-                      offset: Offset(0, 14), // Perpindahan bayangan (x, y)
-                    ),
-                  ],
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.3), // Warna bayangan
+                    spreadRadius: 2, // Seberapa jauh bayangan menyebar
+                    blurRadius: 20, // Seberapa kabur bayangan
+                    offset: Offset(0, 14), // Perpindahan bayangan (x, y)
+                  ),
+                ],
               ),
               child: Column(
                 children: [
@@ -85,13 +86,26 @@ class _BeratSampahPageState extends State<BeratSampahPage> {
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.end,
                         children: [
-                          Text(
-                            '30 KG',
-                            style: TextStyle(
-                              fontSize: 40.0,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white,
-                            ),
+                          StreamBuilder(
+                            stream:
+                                databaseReference.child('stok_sampah').onValue,
+                            builder:
+                                (BuildContext context, AsyncSnapshot snapshot) {
+                              if (snapshot.hasData &&
+                                  snapshot.data!.snapshot.value != null) {
+                                var stokSampah = snapshot.data!.snapshot.value;
+                                return Text(
+                                  '$stokSampah KG',
+                                  style: TextStyle(
+                                    fontSize: 40.0,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.white,
+                                  ),
+                                );
+                              } else {
+                                return Text('Loading...');
+                              }
+                            },
                           ),
                         ],
                       ),
@@ -101,11 +115,10 @@ class _BeratSampahPageState extends State<BeratSampahPage> {
               ),
             ),
           ),
-
-
           Positioned(
             top: 560, // Atur posisi vertikal ke bawah
-            left: MediaQuery.of(context).size.width / 2 - 130, // Atur posisi horizontal ke tengah
+            left: MediaQuery.of(context).size.width / 2 -
+                130, // Atur posisi horizontal ke tengah
             child: Text(
               'Status Sampah',
               style: TextStyle(
@@ -115,23 +128,24 @@ class _BeratSampahPageState extends State<BeratSampahPage> {
               ),
             ),
           ),
-       
-
           Positioned(
             top: 600,
             height: 93,
             width: 265,
-            left: MediaQuery.of(context).size.width / 2 - 132.5, // Atur posisi horizontal di tengah
+            left: MediaQuery.of(context).size.width / 2 -
+                132.5, // Atur posisi horizontal di tengah
             child: Container(
               padding: EdgeInsets.all(20),
               decoration: BoxDecoration(
                 color: Color(0XFF00B16B),
-                borderRadius: BorderRadius.circular(30.0),),
+                borderRadius: BorderRadius.circular(30.0),
+              ),
               child: Align(
                 alignment: Alignment.center,
                 child: Text(
                   'Penuh',
-                  textAlign: TextAlign.center, // Atur teks menjadi center secara horizontal
+                  textAlign: TextAlign
+                      .center, // Atur teks menjadi center secara horizontal
                   style: TextStyle(
                     fontSize: 35,
                     fontWeight: FontWeight.bold,
@@ -141,8 +155,6 @@ class _BeratSampahPageState extends State<BeratSampahPage> {
               ),
             ),
           ),
-
-
         ],
       ),
     );

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_database/firebase_database.dart';
 
 class IntegrasiPage extends StatefulWidget {
   const IntegrasiPage({Key? key}) : super(key: key);
@@ -47,23 +48,39 @@ class _IntegrasiPageState extends State<IntegrasiPage> {
 }
 
 class TemperatureControl extends StatefulWidget {
+  const TemperatureControl({Key? key}) : super(key: key);
   @override
   _TemperatureControlState createState() => _TemperatureControlState();
 }
 
 class _TemperatureControlState extends State<TemperatureControl> {
+  final databaseReference = FirebaseDatabase.instance.ref();
+  var temperatureNow;
   int temperature = 0;
 
   void increaseTemperature() {
     setState(() {
       temperature++;
+      ubahSuhu();
     });
   }
 
   void decreaseTemperature() {
     setState(() {
       temperature--;
+      ubahSuhu();
     });
+  }
+
+  void ubahSuhu() {
+    if (((temperatureNow as int) + temperature) > -1) {
+      databaseReference
+          .child('suhu')
+          .set((temperatureNow as int) + temperature);
+      setState(() {
+        temperature = 0;
+      });
+    }
   }
 
   @override
@@ -113,13 +130,27 @@ class _TemperatureControlState extends State<TemperatureControl> {
                 borderRadius: BorderRadius.circular(16),
               ),
               child: Center(
-                child: Text(
-                  '$temperature°',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 50,
-                    fontWeight: FontWeight.bold,
-                  ),
+                child: StreamBuilder(
+                  stream: databaseReference.child('suhu').onValue,
+                  builder: (BuildContext context, AsyncSnapshot snapshot) {
+                    if (snapshot.hasData &&
+                        snapshot.data!.snapshot.value != null) {
+                      var data = snapshot.data!.snapshot.value;
+                      databaseReference.child('suhu').onValue.listen((event) {
+                        temperatureNow = event.snapshot.value;
+                      });
+                      return Text(
+                        '$data°',
+                        style: TextStyle(
+                          fontSize: 50.0,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                        ),
+                      );
+                    } else {
+                      return Text('Loading...');
+                    }
+                  },
                 ),
               ),
             ),
@@ -150,23 +181,37 @@ class _TemperatureControlState extends State<TemperatureControl> {
 
 // Membuat kelas HumidityControl
 class HumidityControl extends StatefulWidget {
+  const HumidityControl({Key? key}) : super(key: key);
   @override
   _HumidityControlState createState() => _HumidityControlState();
 }
 
 class _HumidityControlState extends State<HumidityControl> {
+  final databaseReference = FirebaseDatabase.instance.ref();
+  var humidityNow;
   int humidity = 0; // Nilai awal kelembapan
 
   void increaseHumidity() {
     setState(() {
       humidity++; // Menambahkan nilai kelembapan
+      ubahKelembaban();
     });
   }
 
   void decreaseHumidity() {
     setState(() {
       humidity--; // Mengurangi nilai kelembapan
+      ubahKelembaban();
     });
+  }
+
+  void ubahKelembaban() {
+    if (((humidityNow as int) + humidity) > -1) {
+      databaseReference.child('kelembaban').set((humidityNow as int) + humidity);
+      setState(() {
+        humidity = 0;
+      });
+    }
   }
 
   @override
@@ -216,13 +261,27 @@ class _HumidityControlState extends State<HumidityControl> {
                 borderRadius: BorderRadius.circular(16),
               ),
               child: Center(
-                child: Text(
-                  '$humidity% RH',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 35,
-                    fontWeight: FontWeight.bold,
-                  ),
+                child: StreamBuilder(
+                  stream: databaseReference.child('kelembaban').onValue,
+                  builder: (BuildContext context, AsyncSnapshot snapshot) {
+                    if (snapshot.hasData &&
+                        snapshot.data!.snapshot.value != null) {
+                      var data = snapshot.data!.snapshot.value;
+                      databaseReference.child('kelembaban').onValue.listen((event) {
+                        humidityNow = event.snapshot.value;
+                      });
+                      return Text(
+                        '$data %RH',
+                        style: TextStyle(
+                          fontSize: 35.0,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                        ),
+                      );
+                    } else {
+                      return Text('Loading...');
+                    }
+                  },
                 ),
               ),
             ),
