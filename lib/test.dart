@@ -7,9 +7,7 @@ class RealtimeDataScreen extends StatefulWidget {
 }
 
 class _RealtimeDataScreenState extends State<RealtimeDataScreen> {
-  final databaseReference = FirebaseDatabase.instance
-      .reference()
-      .child('nutri-review-default-rtdb-asia-southeast1');
+  final databaseReference = FirebaseDatabase.instance.ref();
 
   @override
   Widget build(BuildContext context) {
@@ -17,37 +15,23 @@ class _RealtimeDataScreenState extends State<RealtimeDataScreen> {
       appBar: AppBar(
         title: Text('Realtime Data'),
       ),
-      body: StreamBuilder<Event>(
-        stream: databaseReference.onValue,
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(child: CircularProgressIndicator());
-          } else if (snapshot.hasError) {
-            print('Error: ${snapshot.error}');
-            return Center(
-              child: Padding(
-                padding: EdgeInsets.all(16),
-                child: Text(
-                  "Error loading data",
-                  style: TextStyle(color: Colors.red, fontSize: 20),
-                ),
-              ),
-            );
-          } else if (snapshot.hasData) {
-            DataSnapshot data = snapshot.data!.snapshot;
-            Map<dynamic, dynamic> map = data.value ?? {};
-            return ListView(
-              children: map.entries
-                  .map(
-                    (entry) => ListTile(
-                      title: Text(entry.key),
-                      subtitle: Text(entry.value.toString()),
-                    ),
-                  )
-                  .toList(),
+      body: StreamBuilder(
+        stream: databaseReference.child('kelembaban').onValue,
+        builder: (BuildContext context, AsyncSnapshot snapshot) {
+          if (snapshot.hasData && snapshot.data!.snapshot.value != null) {
+            var data = snapshot.data!.snapshot.value;
+            print(data);
+
+            return Text(
+              '$data',
+              style: TextStyle(
+                  fontFamily: 'Inria Sans',
+                  color: Color(0xFF484848),
+                  fontSize: 14.0,
+                  fontWeight: FontWeight.bold),
             );
           } else {
-            return Center(child: CircularProgressIndicator());
+            return Text('Loading...');
           }
         },
       ),
