@@ -10,6 +10,31 @@ class BeratSampahPage extends StatefulWidget {
 
 class _BeratSampahPageState extends State<BeratSampahPage> {
   final databaseReference = FirebaseDatabase.instance.ref();
+  
+  Color _getColorFromStokSampah(int? stokSampah) {
+    if (stokSampah == null || stokSampah == 0) {
+      return Colors.grey; // Warna abu-abu untuk "kosong"
+    } else if (stokSampah <= 25) {
+      return Color.fromARGB(255, 3, 251, 52); // Warna kuning untuk "sedikit"
+    } else if (stokSampah <= 29) {
+      return Colors.orange; // Warna oranye untuk "banyak"
+    } else {
+      return Color.fromARGB(255, 221, 25, 11); // Warna merah untuk "penuh"
+    }
+  }
+
+  String _getTextFromStokSampah(int? stokSampah) {
+    if (stokSampah == null || stokSampah == 0) {
+      return 'Kosong'; // Teks "kosong"
+    } else if (stokSampah <= 25) {
+      return 'Sedikit'; // Teks "sedikit"
+    } else if (stokSampah <= 29) {
+      return 'Banyak'; // Teks "banyak"
+    } else {
+      return 'Penuh'; // Teks "penuh"
+    }
+  }
+  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -128,32 +153,41 @@ class _BeratSampahPageState extends State<BeratSampahPage> {
               ),
             ),
           ),
-          Positioned(
-            top: 600,
-            height: 93,
-            width: 265,
-            left: MediaQuery.of(context).size.width / 2 -
-                132.5, // Atur posisi horizontal di tengah
-            child: Container(
-              padding: EdgeInsets.all(20),
-              decoration: BoxDecoration(
-                color: Color(0XFF00B16B),
-                borderRadius: BorderRadius.circular(30.0),
-              ),
-              child: Align(
-                alignment: Alignment.center,
-                child: Text(
-                  'Penuh',
-                  textAlign: TextAlign
-                      .center, // Atur teks menjadi center secara horizontal
-                  style: TextStyle(
-                    fontSize: 35,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
+          StreamBuilder(
+            stream: databaseReference.child('stok_sampah').onValue,
+            builder: (BuildContext context, AsyncSnapshot snapshot) {
+              if (snapshot.hasData &&
+                  snapshot.data!.snapshot.value != null) {
+                var stokSampah = snapshot.data!.snapshot.value;
+                return Positioned(
+                  top: 600,
+                  height: 93,
+                  width: 265,
+                  left: MediaQuery.of(context).size.width / 2 - 132.5,
+                  child: Container(
+                    padding: EdgeInsets.all(20),
+                    decoration: BoxDecoration(
+                      color: _getColorFromStokSampah(stokSampah),
+                      borderRadius: BorderRadius.circular(30.0),
+                    ),
+                    child: Align(
+                      alignment: Alignment.center,
+                      child: Text(
+                        _getTextFromStokSampah(stokSampah),
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 35,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
                   ),
-                ),
-              ),
-            ),
+                );
+              } else {
+                return SizedBox(); // Jika tidak ada data, kembalikan widget kosong
+              }
+            },
           ),
         ],
       ),

@@ -251,7 +251,7 @@ class _HomePageState extends State<HomePage> {
   Widget createCard(BuildContext context, String title, String iconPath,
       String dataType, String unit) {
     return Container(
-      width: 150.0,
+      width: 175.0,
       height: 100.0,
       child: Card(
         color: Color(0xFF425537),
@@ -329,7 +329,7 @@ class _HomePageState extends State<HomePage> {
                           );
                         } else {
                           return Text(
-                            'Data not available',
+                            '',
                             style: TextStyle(
                               color: Colors.white,
                               fontSize: 15,
