@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:nutri_revive/berat_sampah_page.dart';
 import 'package:nutri_revive/integrasi_page.dart';
 import 'package:nutri_revive/pengukur_kadar_air.dart';
+import 'package:nutri_revive/test.dart';
 import 'deteksi_suhu.dart';
 import 'monitoring_kelembapan.dart';
 
@@ -165,6 +166,15 @@ class _HomePageState extends State<HomePage> {
               // Kolom untuk menampilkan teks
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                TextButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => RealtimeDataScreen()),
+                      );
+                    },
+                    child: Text('tekan')),
                 Text(
                   // Teks "CONTROL" dengan ukuran font 18
                   'CONTROL',

@@ -30,6 +30,7 @@ class _LoginPageState extends State<LoginPage> {
 
   void login() async {
     final FirebaseAuth firebaseAuth = FirebaseAuth.instance;
+
     String custName = "${_usernameController.text}@gmail.com";
     String custId = _passwordController.text;
 
@@ -42,7 +43,7 @@ class _LoginPageState extends State<LoginPage> {
         _errorMessage = '';
       });
 
-      Navigator.push(
+      Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (context) => HomePage()),
       );
@@ -127,6 +128,8 @@ class _LoginPageState extends State<LoginPage> {
                     prefixIcon: Icon(Icons
                         .person), // Menambahkan icon di sebelah kiri teks username
                     labelText: _isUsernameFocused ? null : 'Username',
+                    alignLabelWithHint: true,
+                    contentPadding: EdgeInsets.symmetric(vertical: 15.0),
                     fillColor: Color(
                         0xFFD9D9D9), // Warna latar belakang kolom username
                     filled: true, // Mengaktifkan latar belakang berwarna
@@ -140,6 +143,7 @@ class _LoginPageState extends State<LoginPage> {
                       borderSide:
                           BorderSide(color: Colors.white), // Ubah warna border
                     ),
+                    floatingLabelBehavior: FloatingLabelBehavior.never,
                   ),
                   onChanged: (value) {
                     setState(() {
@@ -161,6 +165,8 @@ class _LoginPageState extends State<LoginPage> {
                   decoration: InputDecoration(
                     prefixIcon: Icon(Icons
                         .lock), // Menambahkan ikon kunci di sebelah kiri teks password
+                    alignLabelWithHint: true,
+                    contentPadding: EdgeInsets.symmetric(vertical: 15.0),
                     labelText: _isPasswordFocused ? null : 'Password',
                     fillColor: Color(
                         0xFFD9D9D9), // Warna latar belakang kolom username
@@ -175,6 +181,7 @@ class _LoginPageState extends State<LoginPage> {
                       borderSide:
                           BorderSide(color: Colors.white), // Ubah warna border
                     ),
+                    floatingLabelBehavior: FloatingLabelBehavior.never, 
                     suffixIcon: IconButton(
                       icon: Icon(
                           _isObscure ? Icons.visibility : Icons.visibility_off),
