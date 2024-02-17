@@ -1,3 +1,4 @@
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:nutri_revive/home_page.dart';
 
@@ -9,9 +10,10 @@ class PengukurKadarAir extends StatefulWidget {
 }
 
 class _PengukurKadarAirState extends State<PengukurKadarAir> {
+  final databaseReference = FirebaseDatabase.instance.ref();
+  var waterNow;
   int water = 0;
   int meter = 0;
-  int result = 0;
 
   void increasewater() {
     setState(() {
@@ -20,26 +22,29 @@ class _PengukurKadarAirState extends State<PengukurKadarAir> {
   }
 
   void decreasewater() {
-    setState(() {
-      water--;
-    });
+    print((waterNow as int) - water);
+    if (waterNow > -1) {
+      setState(() {
+        water--;
+      });
+    }
   }
 
-  void showresult() {
-    setState(() {
-     result = meter + water;
-    });
+  void ubahKadarAir() {
+    if (((waterNow as int) + water) > -1) {
+      databaseReference.child('kadar_air').set((waterNow as int) + water);
+      setState(() {
+        water = 0;
+      });
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-
-
       backgroundColor: const Color(0xFF5C7557),
       body: Stack(
         children: <Widget>[
-
           // Tombol Kembali
           Positioned(
             top: 65,
@@ -73,15 +78,14 @@ class _PengukurKadarAirState extends State<PengukurKadarAir> {
                   width: 1,
                 ),
                 boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withOpacity(0.3), // Warna bayangan
-                      spreadRadius: 2, // Seberapa jauh bayangan menyebar
-                      blurRadius: 20, // Seberapa kabur bayangan
-                      offset: Offset(0, 14), // Perpindahan bayangan (x, y)
-                    ),
-                  ],
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.3), // Warna bayangan
+                    spreadRadius: 2, // Seberapa jauh bayangan menyebar
+                    blurRadius: 20, // Seberapa kabur bayangan
+                    offset: Offset(0, 14), // Perpindahan bayangan (x, y)
+                  ),
+                ],
               ),
-              
               child: Column(
                 children: [
                   Padding(
@@ -116,13 +120,32 @@ class _PengukurKadarAirState extends State<PengukurKadarAir> {
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.end,
                         children: [
-                          Text(
-                            '$result Meter',
-                            style: TextStyle(
-                              fontSize: 32.0,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white,
-                            ),
+                          StreamBuilder(
+                            stream:
+                                databaseReference.child('kadar_air').onValue,
+                            builder:
+                                (BuildContext context, AsyncSnapshot snapshot) {
+                              if (snapshot.hasData &&
+                                  snapshot.data!.snapshot.value != null) {
+                                var data = snapshot.data!.snapshot.value;
+                                databaseReference
+                                    .child('kadar_air')
+                                    .onValue
+                                    .listen((event) {
+                                  waterNow = event.snapshot.value;
+                                });
+                                return Text(
+                                  '$data Meter',
+                                  style: TextStyle(
+                                    fontSize: 32.0,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.white,
+                                  ),
+                                );
+                              } else {
+                                return Text('Loading...');
+                              }
+                            },
                           ),
                         ],
                       ),
@@ -133,7 +156,6 @@ class _PengukurKadarAirState extends State<PengukurKadarAir> {
             ),
           ),
 
-
           Positioned(
             bottom: 275,
             left: 0,
@@ -141,7 +163,6 @@ class _PengukurKadarAirState extends State<PengukurKadarAir> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-
                 // Tombol -
                 ElevatedButton(
                   onPressed: decreasewater,
@@ -158,7 +179,8 @@ class _PengukurKadarAirState extends State<PengukurKadarAir> {
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(16),
                     ),
-                    padding: EdgeInsets.symmetric(vertical: 10, horizontal: 30), // Atur tinggi dan lebar
+                    padding: EdgeInsets.symmetric(
+                        vertical: 10, horizontal: 30), // Atur tinggi dan lebar
                   ),
                 ),
                 SizedBox(width: 25),
@@ -189,12 +211,13 @@ class _PengukurKadarAirState extends State<PengukurKadarAir> {
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  style: ElevatedButton.styleFrom(  
+                  style: ElevatedButton.styleFrom(
                     backgroundColor: Color(0xFF8B9D88),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(20),
                     ),
-                    padding: EdgeInsets.symmetric(vertical: 10, horizontal: 30), // Atur tinggi dan lebar
+                    padding: EdgeInsets.symmetric(
+                        vertical: 10, horizontal: 30), // Atur tinggi dan lebar
                   ),
                 ),
               ],
@@ -207,7 +230,7 @@ class _PengukurKadarAirState extends State<PengukurKadarAir> {
             left: 120,
             right: 120,
             child: ElevatedButton(
-              onPressed: showresult,
+              onPressed: ubahKadarAir,
               child: Text(
                 'Simpan',
                 style: TextStyle(
@@ -225,8 +248,6 @@ class _PengukurKadarAirState extends State<PengukurKadarAir> {
               ),
             ),
           ),
-
-
         ],
       ),
     );

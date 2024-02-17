@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 
 class MonotoringKelembapanPage extends StatefulWidget {
@@ -11,6 +12,8 @@ class MonotoringKelembapanPage extends StatefulWidget {
 }
 
 class _MonotoringKelembapanPageState extends State<MonotoringKelembapanPage> {
+  final databaseReference = FirebaseDatabase.instance.ref();
+
   Future<List<List<String>>> getDataKelembaban() async {
     final FirebaseAuth _auth = FirebaseAuth.instance;
     User? user = _auth.currentUser;
@@ -95,12 +98,27 @@ class _MonotoringKelembapanPageState extends State<MonotoringKelembapanPage> {
                                   height: 100.0,
                                 ),
                                 SizedBox(width: 8.0),
-                                Text(
-                                  '20% RH',
-                                  style: TextStyle(
-                                      fontSize: 25.0,
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.white),
+                                StreamBuilder(
+                                  stream: databaseReference
+                                      .child('kelembaban')
+                                      .onValue,
+                                  builder: (BuildContext context,
+                                      AsyncSnapshot snapshot) {
+                                    if (snapshot.hasData &&
+                                        snapshot.data!.snapshot.value != null) {
+                                      var data = snapshot.data!.snapshot.value;
+
+                                      return Text(
+                                        '${data}% RH',
+                                        style: TextStyle(
+                                            fontSize: 25.0,
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.white),
+                                      );
+                                    } else {
+                                      return Text('Loading...');
+                                    }
+                                  },
                                 ),
                               ],
                             ),

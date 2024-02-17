@@ -20,7 +20,6 @@ class _RealtimeDataScreenState extends State<RealtimeDataScreen> {
         builder: (BuildContext context, AsyncSnapshot snapshot) {
           if (snapshot.hasData && snapshot.data!.snapshot.value != null) {
             var data = snapshot.data!.snapshot.value;
-            print(data);
 
             return Text(
               '$data',
