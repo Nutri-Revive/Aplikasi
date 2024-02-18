@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
+import 'history_kelembaban.dart';
 
 class MonotoringKelembapanPage extends StatefulWidget {
   const MonotoringKelembapanPage({Key? key}) : super(key: key);
@@ -195,7 +196,7 @@ class _MonotoringKelembapanPageState extends State<MonotoringKelembapanPage> {
                       // Navigasi ke halaman lainnya
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => SecondPage()),
+                        MaterialPageRoute(builder: (context) => KelembabanTablePage()),
                       );
                     },
                     child: Align(
