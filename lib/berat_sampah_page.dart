@@ -15,11 +15,11 @@ class _BeratSampahPageState extends State<BeratSampahPage> {
     if (stokSampah == null || stokSampah == 0) {
       return Colors.grey; // Warna abu-abu untuk "kosong"
     } else if (stokSampah <= 25) {
-      return Color.fromARGB(255, 3, 251, 52); // Warna kuning untuk "sedikit"
+      return Color(0xFF00FF8A); // Warna kuning untuk "sedikit"
     } else if (stokSampah <= 29) {
-      return Colors.orange; // Warna oranye untuk "banyak"
+      return Color(0xFFFF9700); // Warna oranye untuk "banyak"
     } else {
-      return Color.fromARGB(255, 221, 25, 11); // Warna merah untuk "penuh"
+      return Color(0xFFDD2000); // Warna merah untuk "penuh"
     }
   }
 

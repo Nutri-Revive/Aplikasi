@@ -137,7 +137,7 @@ class _PengukurKadarAirState extends State<PengukurKadarAir> {
                                 return Text(
                                   '$data METER',
                                   style: TextStyle(
-                                    fontSize: 32.0,
+                                    fontSize: 25.0,
                                     fontWeight: FontWeight.bold,
                                     color: Colors.white,
                                   ),
