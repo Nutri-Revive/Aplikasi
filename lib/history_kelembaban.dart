@@ -1,6 +1,38 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 class KelembabanTablePage extends StatelessWidget {
+  Future<List<List<String>>> getDataKelembaban() async {
+    List<String> tanggal = [];
+    List<String> waktu = [];
+    List<String> nilaiKelembaban = [];
+
+    // Mendapatkan referensi ke koleksi "riwayat_kelembaban"
+    CollectionReference users =
+        FirebaseFirestore.instance.collection('riwayat_kelembaban');
+
+    // Mendapatkan data dari koleksi "riwayat_kelembaban"
+    QuerySnapshot querySnapshot =
+        await users.orderBy('waktu', descending: true).get();
+
+    // Looping untuk mendapatkan data setiap dokumen pada querySnapshot
+    querySnapshot.docs.forEach((doc) {
+      var jam = DateTime.fromMillisecondsSinceEpoch(
+          doc['waktu'].millisecondsSinceEpoch);
+      var dataJamString =
+          '${jam.day.toString().padLeft(2, '0')}-${jam.month.toString().padLeft(2, '0')}-${jam.year}'; // Sesuaikan format tanggal
+      var waktuString =
+          '${jam.hour.toString().padLeft(2, '0')}:${jam.minute.toString().padLeft(2, '0')}';
+      var kelembabanString = '${doc['kelembaban']} %RH';
+
+      tanggal.add(dataJamString);
+      waktu.add(waktuString);
+      nilaiKelembaban.add(kelembabanString);
+    });
+
+    return [tanggal, waktu, nilaiKelembaban];
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -17,7 +49,7 @@ class KelembabanTablePage extends StatelessWidget {
         centerTitle: true,
         backgroundColor: const Color(0xFF5C7557),
         leading: Padding(
-          padding: const EdgeInsets.only(left: 16.0), // Sesuaikan nilai padding
+          padding: const EdgeInsets.only(left: 16.0),
           child: IconButton(
             icon: Icon(Icons.arrow_back),
             onPressed: () {
@@ -34,7 +66,7 @@ class KelembabanTablePage extends StatelessWidget {
             scrollDirection: Axis.vertical,
             child: Padding(
               padding: const EdgeInsets.all(16.0),
-              child: KelembabanTable(),
+              child: KelembabanTable(data: getDataKelembaban()),
             ),
           ),
         ],
@@ -44,43 +76,63 @@ class KelembabanTablePage extends StatelessWidget {
 }
 
 class KelembabanTable extends StatelessWidget {
-  final List<List<dynamic>> data = [
-    ['Tanggal', 'Waktu', 'Nila Kelembaban'],
-    ['01-02-2024', '08:00', '25°C'],
-    ['02-02-2024', '12:30', '28°C'],
-    ['03-02-2024', '16:45', '23°C'],
-    // Tambahkan data lain sesuai kebutuhan
-  ];
+  final Future<List<List<String>>> data;
+
+  KelembabanTable({required this.data});
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        color: const Color(0xFF425537), // Ganti dengan warna yang diinginkan
-        borderRadius: BorderRadius.circular(20.0),
-      ),
-      child: Table(
-        border: TableBorder.all(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(20.0),
-        ),
-        defaultVerticalAlignment: TableCellVerticalAlignment.middle,
-        children: data.map((rowData) {
-          return _buildTableRow(rowData);
-        }).toList(),
-      ),
+    return FutureBuilder<List<List<String>>>(
+      future: data,
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return CircularProgressIndicator();
+        } else if (snapshot.hasError) {
+          return Text('Error: ${snapshot.error}');
+        } else {
+          return Container(
+            decoration: BoxDecoration(
+              color: const Color(0xFF425537),
+              borderRadius: BorderRadius.circular(20.0),
+            ),
+            child: Table(
+              border: TableBorder.all(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(20.0),
+              ),
+              defaultVerticalAlignment: TableCellVerticalAlignment.middle,
+              children: _buildTableRows(snapshot.data!),
+            ),
+          );
+        }
+      },
     );
   }
 
-  TableRow _buildTableRow(List<dynamic> rowData,) {
+  List<TableRow> _buildTableRows(List<List<String>>? data) {
+    if (data == null || data.isEmpty) {
+      return [];
+    }
+
+    List<TableRow> rows = [];
+    rows.add(_buildTableRow(['Tanggal', 'Waktu', 'Nilai Kelembaban']));
+
+    for (int i = 0; i < data[0].length; i++) {
+      rows.add(_buildTableRow([data[0][i], data[1][i], data[2][i]]));
+    }
+
+    return rows;
+  }
+
+  TableRow _buildTableRow(List<String> rowData) {
     return TableRow(
       children: rowData.map((item) {
         return Container(
           padding: EdgeInsets.all(10),
-          height: 50.0,
+          height: 60.0,
           child: Center(
             child: Text(
-              item.toString(),
+              item,
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontSize: 16.0,

@@ -245,7 +245,7 @@ class _HomePageState extends State<HomePage> {
   Widget createCard(BuildContext context, String title, String iconPath,
       String dataType, String unit) {
     return Container(
-      width: 175.0,
+      width: 155.0,
       height: 100.0,
       child: Card(
         color: Color(0xFF425537),

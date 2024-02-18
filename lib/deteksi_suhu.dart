@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
-import 'history_suhu.dart';
+import 'package:nutri_revive/history_suhu.dart';
 
 class DeteksiSuhuPage extends StatefulWidget {
   const DeteksiSuhuPage({Key? key}) : super(key: key);
@@ -26,13 +26,15 @@ class _DeteksiSuhuPageState extends State<DeteksiSuhuPage> {
         FirebaseFirestore.instance.collection('riwayat_suhu');
 
     // Mendapatkan data dari koleksi "users"
-    QuerySnapshot querySnapshot = await users.get();
+    QuerySnapshot querySnapshot =
+        await users.orderBy('waktu', descending: true).limit(4).get();
 
     // Looping untuk mendapatkan data setiap dokumen pada querySnapshot
     querySnapshot.docs.forEach((doc) {
       var jam = DateTime.fromMillisecondsSinceEpoch(
           doc['waktu'].millisecondsSinceEpoch);
-      var dataJamString = '${jam.hour}:${jam.minute}${jam.second}';
+      var dataJamString =
+          '${jam.year}-${jam.month.toString().padLeft(2, '0')}-${jam.day.toString().padLeft(2, '0')} ${jam.hour.toString().padLeft(2, '0')}:${jam.minute.toString().padLeft(2, '0')}';
       var suhuString = '${doc['suhu']}°';
       suhu.add(suhuString);
       waktu.add(dataJamString);
@@ -101,9 +103,8 @@ class _DeteksiSuhuPageState extends State<DeteksiSuhuPage> {
                                 ),
                                 SizedBox(width: 8.0),
                                 StreamBuilder(
-                                  stream: databaseReference
-                                      .child('suhu')
-                                      .onValue,
+                                  stream:
+                                      databaseReference.child('suhu').onValue,
                                   builder: (BuildContext context,
                                       AsyncSnapshot snapshot) {
                                     if (snapshot.hasData &&
@@ -233,9 +234,10 @@ class _DeteksiSuhuPageState extends State<DeteksiSuhuPage> {
 
   // Fungsi _buildTableRow diperbarui
   TableRow _buildTableRow(List data,
-      {bool isHeader = true, double height = 30.0}) {
+      {bool isHeader = true, double height = 30.0, int entriesToShow = 4}) {
     return TableRow(
       children: data
+          .take(entriesToShow)
           .map(
             (item) => Container(
               padding: EdgeInsets.all(10),
@@ -245,7 +247,7 @@ class _DeteksiSuhuPageState extends State<DeteksiSuhuPage> {
                   item.toString(),
                   textAlign: TextAlign.center, // Menetapkan textAlign ke center
                   style: TextStyle(
-                    fontSize: isHeader ? 16.0 : 30.0,
+                    fontSize: isHeader ? 10.0 : 20.0,
                     color: Colors.white,
                     fontWeight: isHeader ? FontWeight.bold : FontWeight.bold,
                   ),

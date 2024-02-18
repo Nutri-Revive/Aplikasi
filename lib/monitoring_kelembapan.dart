@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
-import 'history_kelembaban.dart';
+import 'package:nutri_revive/history_kelembaban.dart';
 
 class MonotoringKelembapanPage extends StatefulWidget {
   const MonotoringKelembapanPage({Key? key}) : super(key: key);
@@ -27,14 +27,16 @@ class _MonotoringKelembapanPageState extends State<MonotoringKelembapanPage> {
         FirebaseFirestore.instance.collection('riwayat_kelembaban');
 
     // Mendapatkan data dari koleksi "riwayat_kelembaban"
-    QuerySnapshot querySnapshot = await users.get();
+    QuerySnapshot querySnapshot =
+        await users.orderBy('waktu', descending: true).limit(4).get();
 
     // Looping untuk mendapatkan data setiap dokumen pada querySnapshot
     querySnapshot.docs.forEach((doc) {
       var jam = DateTime.fromMillisecondsSinceEpoch(
           doc['waktu'].millisecondsSinceEpoch);
-      var dataJamString = '${jam.hour}:${jam.minute}${jam.second}';
-      var kelembabanString = '${doc['kelembaban']}% RH';
+      var dataJamString =
+          '${jam.year}-${jam.month.toString().padLeft(2, '0')}-${jam.day.toString().padLeft(2, '0')} ${jam.hour.toString().padLeft(2, '0')}:${jam.minute.toString().padLeft(2, '0')}';
+      var kelembabanString = '${doc['kelembaban']} %RH';
       kelembaban.add(kelembabanString);
       waktu.add(dataJamString);
     });
@@ -196,7 +198,8 @@ class _MonotoringKelembapanPageState extends State<MonotoringKelembapanPage> {
                       // Navigasi ke halaman lainnya
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => KelembabanTablePage()),
+                        MaterialPageRoute(
+                            builder: (context) => KelembabanTablePage()),
                       );
                     },
                     child: Align(
@@ -234,9 +237,10 @@ class _MonotoringKelembapanPageState extends State<MonotoringKelembapanPage> {
 
   // Fungsi _buildTableRow diperbarui
   TableRow _buildTableRow(List<String> data,
-      {bool isHeader = true, double height = 30.0}) {
+      {bool isHeader = true, double height = 30.0, int entriesToShow = 4}) {
     return TableRow(
       children: data
+          .take(entriesToShow)
           .map(
             (item) => Container(
               padding: EdgeInsets.all(10),
@@ -246,7 +250,7 @@ class _MonotoringKelembapanPageState extends State<MonotoringKelembapanPage> {
                   item,
                   textAlign: TextAlign.center, // Menetapkan textAlign ke center
                   style: TextStyle(
-                    fontSize: isHeader ? 16.0 : 20.0,
+                    fontSize: isHeader ? 10.0 : 15.0,
                     color: Colors.white,
                     fontWeight: isHeader ? FontWeight.bold : FontWeight.bold,
                   ),
@@ -255,20 +259,6 @@ class _MonotoringKelembapanPageState extends State<MonotoringKelembapanPage> {
             ),
           )
           .toList(),
-    );
-  }
-}
-
-class SecondPage extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Halaman Kedua'),
-      ),
-      body: Center(
-        child: Text('Halaman Kedua'),
-      ),
     );
   }
 }
