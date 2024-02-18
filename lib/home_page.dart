@@ -221,7 +221,7 @@ class _HomePageState extends State<HomePage> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  createCard(context, 'KELEMBAPAN', 'assets/kelembapan.png',
+                  createCard(context, 'KELEMBABAN', 'assets/kelembapan.png',
                       'kelembaban', ' %RH'),
                   createCard(context, 'SUHU', 'assets/suhu.png', 'suhu', '°'),
                 ],
@@ -257,7 +257,7 @@ class _HomePageState extends State<HomePage> {
         ),
         child: InkWell(
           onTap: () async {
-            if (title == 'KELEMBAPAN') {
+            if (title == 'KELEMBABAN') {
               Navigator.push(
                 context,
                 MaterialPageRoute(
