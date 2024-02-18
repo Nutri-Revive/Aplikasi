@@ -106,12 +106,6 @@ class _HomePageState extends State<HomePage> {
                 ),
 
                 Spacer(),
-                Icon(
-                  Icons
-                      .notifications, // Change this to the notification icon you want
-                  color: Colors.white,
-                  size: 30,
-                ),
               ],
             ),
           ),
