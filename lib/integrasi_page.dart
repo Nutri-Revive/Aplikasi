@@ -207,7 +207,9 @@ class _HumidityControlState extends State<HumidityControl> {
 
   void ubahKelembaban() {
     if (((humidityNow as int) + humidity) > -1) {
-      databaseReference.child('kelembaban').set((humidityNow as int) + humidity);
+      databaseReference
+          .child('kelembaban')
+          .set((humidityNow as int) + humidity);
       setState(() {
         humidity = 0;
       });
@@ -267,7 +269,10 @@ class _HumidityControlState extends State<HumidityControl> {
                     if (snapshot.hasData &&
                         snapshot.data!.snapshot.value != null) {
                       var data = snapshot.data!.snapshot.value;
-                      databaseReference.child('kelembaban').onValue.listen((event) {
+                      databaseReference
+                          .child('kelembaban')
+                          .onValue
+                          .listen((event) {
                         humidityNow = event.snapshot.value;
                       });
                       return Text(
@@ -316,13 +321,11 @@ class CompostControl extends StatefulWidget {
 }
 
 class _CompostControlState extends State<CompostControl> {
+  final databaseReference = FirebaseDatabase.instance.ref();
+  int pengomposNow = 0;
+
   TextEditingController compostInputController =
       TextEditingController(); // Membuat controller untuk input field
-
-  void saveCompost() {
-    // Membuat fungsi untuk menyimpan nilai input field
-    print('Berat bahan pengompos: ${compostInputController.text} kg');
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -348,32 +351,51 @@ class _CompostControlState extends State<CompostControl> {
             Container(
               width: 220,
               height: 35,
-              child: TextField(
-                controller:
-                    compostInputController, // Menghubungkan controller dengan input field
-                decoration: InputDecoration(
-                  hintText: 'Masukkan berat bahan pengompos (kg)',
-                  border: OutlineInputBorder(
-                    // Menambahkan properti border
-                    borderSide:
-                        BorderSide.none, // Mengatur warna dan lebar border
-                    borderRadius:
-                        BorderRadius.circular(5), // Mengatur bentuk border
-                  ),
-                  filled: true,
-                  fillColor: Color(0xFFBEC8BC),
-                  contentPadding: EdgeInsets.only(top: 10, left: 10),
-                ),
-                style: TextStyle(
-                  // Menambahkan properti style
-                  fontSize: 10,
-                  color: Colors.white, // Mengatur ukuran teks menjadi 18
-                ),
+              child: StreamBuilder(
+                stream: databaseReference.child('bahan_pengompos').onValue,
+                builder: (BuildContext context, AsyncSnapshot snapshot) {
+                  if (snapshot.hasData &&
+                      snapshot.data!.snapshot.value != null) {
+                    pengomposNow = snapshot.data!.snapshot.value;
+                    return TextField(
+                      controller: compostInputController,
+                      keyboardType: TextInputType.number,
+                      decoration: InputDecoration(
+                        hintText: 'Masukkan berat bahan pengompos (kg)',
+                        border: OutlineInputBorder(
+                          borderSide: BorderSide.none,
+                          borderRadius: BorderRadius.circular(5),
+                        ),
+                        filled: true,
+                        fillColor: Color(0xFFBEC8BC),
+                        contentPadding: EdgeInsets.only(top: 10, left: 10),
+                      ),
+                      style: TextStyle(
+                        fontSize: 10,
+                        color: Colors.black,
+                      ),
+                    );
+                  } else {
+                    return Text('Loading...');
+                  }
+                },
               ),
             ),
             SizedBox(width: 16),
             ElevatedButton(
-              onPressed: saveCompost, // Menghubungkan fungsi dengan tombol
+              onPressed: () {
+                int pengomposInput =
+                    int.tryParse(compostInputController.text) ?? 0;
+                if (pengomposNow + pengomposInput > -1) {
+                  databaseReference
+                      .child('bahan_pengompos')
+                      .set(pengomposNow + pengomposInput);
+                  setState(() {
+                    compostInputController.text =
+                        ''; // Clear input after setting to the database
+                  });
+                }
+              }, // Menghubungkan fungsi dengan tombol
               child: Text(
                 'Simpan',
                 style: TextStyle(
