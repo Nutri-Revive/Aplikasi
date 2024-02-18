@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
+import 'history_suhu.dart';
 
 class DeteksiSuhuPage extends StatefulWidget {
   const DeteksiSuhuPage({Key? key}) : super(key: key);
@@ -194,7 +195,7 @@ class _DeteksiSuhuPageState extends State<DeteksiSuhuPage> {
                       // Navigasi ke halaman lainnya
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => SecondPage()),
+                        MaterialPageRoute(builder: (context) => SuhuTablePage()),
                       );
                     },
                     child: Align(
@@ -253,20 +254,6 @@ class _DeteksiSuhuPageState extends State<DeteksiSuhuPage> {
             ),
           )
           .toList(),
-    );
-  }
-}
-
-class SecondPage extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Halaman Kedua'),
-      ),
-      body: Center(
-        child: Text('Halaman Kedua'),
-      ),
     );
   }
 }
