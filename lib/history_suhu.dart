@@ -70,7 +70,8 @@ class _SuhuTableState extends State<SuhuTable> {
 
         String formattedDate =
             '${dateTime.day}-${dateTime.month}-${dateTime.year}';
-        String formattedTime = '${dateTime.hour}:${dateTime.minute}';
+        var formattedTime =
+            '${dateTime.hour.toString().padLeft(2, '0')}:${dateTime.minute.toString().padLeft(2, '0')}';
 
         return [formattedDate, formattedTime, doc['suhu']];
       }).toList(),

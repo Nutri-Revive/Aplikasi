@@ -14,8 +14,6 @@ class _IntegrasiPageState extends State<IntegrasiPage> {
     var isKeyboardVisible = MediaQuery.of(context).viewInsets.bottom != 0;
     return Scaffold(
       backgroundColor: const Color(0xFF5C7557),
-      resizeToAvoidBottomInset:
-          true, // parameter ini dapat dihilangkan karena nilainya true secara default
       body: Stack(
         children: <Widget>[
           if (!isKeyboardVisible)
@@ -331,57 +329,83 @@ class _CompostControlState extends State<CompostControl> {
   Widget build(BuildContext context) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
-      crossAxisAlignment: CrossAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        Padding(
-          padding: const EdgeInsets.only(left: 32.0),
-          child: Text(
-            'Atur Bahan Pengompos',
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 22,
-              fontWeight: FontWeight.bold,
+        Align(
+          alignment: Alignment.topLeft,
+          child: Padding(
+            padding: const EdgeInsets.only(left: 32.0),
+            child: Text(
+              'Atur Bahan Pengompos',
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 22,
+                fontWeight: FontWeight.bold,
+              ),
             ),
           ),
         ),
         SizedBox(height: 16),
+        Container(
+          width: 220,
+          child: StreamBuilder(
+            stream: databaseReference.child('bahan_pengompos').onValue,
+            builder: (BuildContext context, AsyncSnapshot snapshot) {
+              if (snapshot.hasData && snapshot.data!.snapshot.value != null) {
+                pengomposNow = snapshot.data!.snapshot.value;
+                return Center(
+                  child: Container(
+                      width: 142,
+                      height: 93,
+                      decoration: BoxDecoration(
+                        color: Color(0xFF425537),
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                      child: Center(
+                          child: Text(
+                        '$pengomposNow Kg',
+                        style: TextStyle(
+                          fontSize: 40.0,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                        ),
+                      ))),
+                );
+              } else {
+                return Text('Loading...');
+              }
+            },
+          ),
+        ),
+        SizedBox(
+          height: 16.0,
+        ),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Container(
-              width: 220,
-              height: 35,
-              child: StreamBuilder(
-                stream: databaseReference.child('bahan_pengompos').onValue,
-                builder: (BuildContext context, AsyncSnapshot snapshot) {
-                  if (snapshot.hasData &&
-                      snapshot.data!.snapshot.value != null) {
-                    pengomposNow = snapshot.data!.snapshot.value;
-                    return TextField(
-                      controller: compostInputController,
-                      keyboardType: TextInputType.number,
-                      decoration: InputDecoration(
-                        hintText: 'Masukkan berat bahan pengompos (kg)',
-                        border: OutlineInputBorder(
-                          borderSide: BorderSide.none,
-                          borderRadius: BorderRadius.circular(5),
-                        ),
-                        filled: true,
-                        fillColor: Color(0xFFBEC8BC),
-                        contentPadding: EdgeInsets.only(top: 10, left: 10),
-                      ),
-                      style: TextStyle(
-                        fontSize: 10,
-                        color: Colors.black,
-                      ),
-                    );
-                  } else {
-                    return Text('Loading...');
-                  }
-                },
+            SizedBox(
+              height: 35.0,
+              width: 225.0,
+              child: TextField(
+                controller: compostInputController,
+                keyboardType: TextInputType.number,
+                decoration: InputDecoration(
+                  hintText: 'Masukkan berat bahan pengompos (kg)',
+                  border: OutlineInputBorder(
+                    borderSide: BorderSide.none,
+                    borderRadius: BorderRadius.circular(5),
+                  ),
+                  filled: true,
+                  fillColor: Color(0xFFBEC8BC),
+                  contentPadding: EdgeInsets.only(left: 10),
+                ),
+                style: TextStyle(
+                  fontSize: 10,
+                  color: Colors.black,
+                ),
               ),
             ),
-            SizedBox(width: 16),
+            SizedBox(width: 10.0),
             ElevatedButton(
               onPressed: () {
                 int pengomposInput =
