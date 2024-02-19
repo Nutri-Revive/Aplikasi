@@ -87,6 +87,7 @@ class _TemperatureControlState extends State<TemperatureControl> {
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        SizedBox(height: 40),
         Padding(
           padding: const EdgeInsets.only(left: 32.0),
           child: Text(

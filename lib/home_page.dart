@@ -53,32 +53,35 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Color(0xFF5C7557),
-      body: Column(
-        children: [
-          SizedBox(height: 40),
-          Container(
-            padding: EdgeInsets.all(20),
-            child: Row(
-              children: [
-                // Profile Picture
-                Image.asset(
-                  "assets/profil.png", // Ganti dengan path ke gambar Anda
-                  width: 50,
-                  height: 50,
-                ),
-                // Spacing
-                SizedBox(width: 10),
-
-                // Nama pemilik
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    FutureBuilder(
+      body: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            SizedBox(height: 40),
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 20.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(50),
+                    child: Image.asset(
+                      "assets/profile.jpg",
+                      width: 50,
+                      height: 50,
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                  SizedBox(width: 10),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      FutureBuilder(
                         future: getDataUser(),
                         builder: (context, snapshot) {
                           if (snapshot.connectionState ==
                               ConnectionState.waiting) {
-                            return CircularProgressIndicator(); // Menampilkan indikator loading saat data masih diambil
+                            return CircularProgressIndicator();
                           } else {
                             if (snapshot.hasError) {
                               return Text('Error: ${snapshot.error}');
@@ -86,8 +89,7 @@ class _HomePageState extends State<HomePage> {
                               if (snapshot.hasData && snapshot.data!.exists) {
                                 Map<String, dynamic> userData =
                                     snapshot.data!.data()!;
-                                String nama = userData['nama_lengkap'] ??
-                                    ''; // Mendapatkan alamat pengguna, jika ada
+                                String nama = userData['nama_lengkap'] ?? '';
                                 return Text(
                                   nama,
                                   style: TextStyle(
@@ -101,143 +103,175 @@ class _HomePageState extends State<HomePage> {
                               }
                             }
                           }
-                        }),
-                  ],
-                ),
-
-                Spacer(),
-              ],
+                        },
+                      ),
+                    ],
+                  ),
+                  Spacer(),
+                ],
+              ),
             ),
-          ),
-          SizedBox(height: 20),
-          FutureBuilder(
+            SizedBox(height: 20),
+            FutureBuilder(
               future: getDataUser(),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
-                  return CircularProgressIndicator(); // Menampilkan indikator loading saat data masih diambil
+                  return CircularProgressIndicator();
                 } else {
                   if (snapshot.hasError) {
                     return Text('Error: ${snapshot.error}');
                   } else {
                     if (snapshot.hasData && snapshot.data!.exists) {
                       Map<String, dynamic> userData = snapshot.data!.data()!;
-                      String address = userData['tempat_tinggal'] ??
-                          ''; // Mendapatkan alamat pengguna, jika ada
-                      return Text(
-                        address,
-                        textAlign: TextAlign.center,
+                      String address = userData['tempat_tinggal'] ?? '';
+                      // Membuat TextSpan untuk memformat teks dengan baris baru setelah koma
+                      TextSpan textSpan = TextSpan(
+                        text: address,
                         style: TextStyle(
                           fontSize: 20,
                           fontWeight: FontWeight.bold,
                           color: Colors.white,
                         ),
                       );
+                      int commaIndex = address.indexOf(',');
+                      // Jika koma ditemukan, tambahkan baris baru setelah koma
+                      if (commaIndex != -1) {
+                        textSpan = TextSpan(
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                          ),
+                          children: [
+                            TextSpan(
+                                text: address.substring(
+                                    0, commaIndex + 1)), // Teks sebelum koma
+                            TextSpan(text: '\n'), // Baris baru setelah koma
+                            TextSpan(
+                                text: address.substring(
+                                    commaIndex + 1)), // Teks setelah koma
+                          ],
+                        );
+                      }
+                      return RichText(
+                        textAlign: TextAlign.center,
+                        text: textSpan,
+                      );
                     } else {
                       return Text('User data not found or empty');
                     }
                   }
                 }
-              }),
-          SizedBox(height: 40),
-          ElevatedButton.icon(
-            onPressed: () {
-              Navigator.push(
-                context, // Konteks dari widget saat ini
-                MaterialPageRoute(
-                  // Buat rute baru menggunakan MaterialPageRoute
-                  builder: (context) =>
-                      const IntegrasiPage(), // Widget yang akan ditampilkan di rute baru
+              },
+            ),
+            SizedBox(height: 40),
+            ElevatedButton.icon(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const IntegrasiPage(),
+                  ),
+                );
+              },
+              icon: Padding(
+                padding: EdgeInsets.only(right: 15),
+                child: Image.asset(
+                  "assets/control.png",
+                  width: 100,
+                  height: 100,
                 ),
-              );
-            },
-            icon: Padding(
-              padding: EdgeInsets.only(right: 15), // Atur jarak gambar ke kanan
-              child: Image.asset(
-                "assets/control.png", // Ganti dengan path ke gambar Anda
-                width: 100,
-                height: 100,
+              ),
+              label: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'CONTROL',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 30,
+                    ),
+                  ),
+                  Text(
+                    'IOT FOOD WASTE\nCOMPOSTER',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 17,
+                    ),
+                  ),
+                ],
+              ),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Color(0xFF425537),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(30),
+                  side: BorderSide(color: Color(0xFF687144), width: 1.5),
+                ),
+                padding: EdgeInsets.all(30),
               ),
             ),
-            label: Column(
-              // Kolom untuk menampilkan teks
+            SizedBox(height: 50.0),
+            Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  // Teks "CONTROL" dengan ukuran font 18
-                  'CONTROL',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 30,
+                Padding(
+                  padding: EdgeInsets.only(left: 35.0),
+                  child: Text(
+                    'Parameter',
+                    textAlign: TextAlign.start,
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
                   ),
                 ),
-                Text(
-                  // Teks "IOT FOOD WASTE COMPOSTER" dengan ukuran font 12
-                  'IOT FOOD WASTE\nCOMPOSTER',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 17,
-                  ),
+                SizedBox(height: 10.0),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    createCard(
+                      context,
+                      'KELEMBABAN',
+                      'assets/kelembapan.png',
+                      'kelembaban',
+                      ' %RH',
+                    ),
+                    createCard(
+                      context,
+                      'SUHU',
+                      'assets/suhu.png',
+                      'suhu',
+                      '°',
+                    ),
+                  ],
                 ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    createCard(
+                      context,
+                      'STOK SAMPAH',
+                      'assets/stok_sampah.png',
+                      'stok_sampah',
+                      ' KG',
+                    ),
+                    createCard(
+                      context,
+                      'KETINGGIAN AIR',
+                      'assets/kadar_air.png',
+                      'kadar_air',
+                      ' METER',
+                    ),
+                  ],
+                )
               ],
             ),
-            style: ElevatedButton.styleFrom(
-              // Gaya dari tombol
-              backgroundColor:
-                  Color(0xFF425537), // Warna latar belakang hijau gelap
-
-              shape: RoundedRectangleBorder(
-                  // Bentuk persegi panjang berbulet dengan radius 10
-                  borderRadius: BorderRadius.circular(30),
-                  side: BorderSide(color: Color(0xFF687144), width: 1.5)),
-              padding:
-                  EdgeInsets.all(30), // Jarak antara konten dan tepi tombol
-            ),
-          ),
-          SizedBox(
-            height: 50.0,
-          ),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Padding(
-                padding:
-                    EdgeInsets.only(left: 35.0), // Atur nilai sesuai kebutuhan
-                child: Text(
-                  'Parameter',
-                  textAlign: TextAlign.start,
-                  style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
-                  ),
-                ),
-              ),
-              SizedBox(
-                height: 10.0,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  createCard(context, 'KELEMBABAN', 'assets/kelembapan.png',
-                      'kelembaban', ' %RH'),
-                  createCard(context, 'SUHU', 'assets/suhu.png', 'suhu', '°'),
-                ],
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  createCard(context, 'STOK SAMPAH', 'assets/stok_sampah.png',
-                      'stok_sampah', ' KG'),
-                  createCard(context, 'KETINGGIAN AIR', 'assets/kadar_air.png',
-                      'kadar_air', ' METER'),
-                ],
-              )
-            ],
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
