@@ -10,31 +10,23 @@ class BeratSampahPage extends StatefulWidget {
 
 class _BeratSampahPageState extends State<BeratSampahPage> {
   final databaseReference = FirebaseDatabase.instance.ref();
-  
-  Color _getColorFromStokSampah(int? stokSampah) {
-    if (stokSampah == null || stokSampah == 0) {
-      return Colors.grey; // Warna abu-abu untuk "kosong"
-    } else if (stokSampah <= 25) {
-      return Color(0xFF00FF8A); // Warna kuning untuk "sedikit"
-    } else if (stokSampah <= 29) {
-      return Color(0xFFFF9700); // Warna oranye untuk "banyak"
+
+  Color _getColorFromStokSampah(stokSampah) {
+    if (stokSampah == null || stokSampah == 'Tidak Penuh') {
+      return Color(0xFF00FF8A); // Warna abu-abu untuk "kosong"
     } else {
       return Color(0xFFDD2000); // Warna merah untuk "penuh"
     }
   }
 
-  String _getTextFromStokSampah(int? stokSampah) {
-    if (stokSampah == null || stokSampah == 0) {
-      return 'Kosong'; // Teks "kosong"
-    } else if (stokSampah <= 25) {
-      return 'Sedikit'; // Teks "sedikit"
-    } else if (stokSampah <= 29) {
-      return 'Banyak'; // Teks "banyak"
+  String _getTextFromStokSampah(stokSampah) {
+    if (stokSampah == null || stokSampah == 'Tidak Penuh') {
+      return 'Tidak Penuh'; // Teks "kosong"
     } else {
       return 'Penuh'; // Teks "penuh"
     }
   }
-  
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -94,45 +86,50 @@ class _BeratSampahPageState extends State<BeratSampahPage> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Image.asset(
-                              'assets/trash_logo.png',
-                              width: 110,
-                              height: 110,
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.all(10.0),
+                              child: Image.asset(
+                                'assets/trash_logo.png',
+                                width: 110,
+                                height: 110,
+                              ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
-                      SizedBox(width: 10),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        children: [
-                          StreamBuilder(
-                            stream:
-                                databaseReference.child('stok_sampah').onValue,
-                            builder:
-                                (BuildContext context, AsyncSnapshot snapshot) {
-                              if (snapshot.hasData &&
-                                  snapshot.data!.snapshot.value != null) {
-                                var stokSampah = snapshot.data!.snapshot.value;
-                                return Text(
-                                  '$stokSampah KG',
-                                  style: TextStyle(
-                                    fontSize: 40.0,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.white,
-                                  ),
-                                );
-                              } else {
-                                return Text('Loading...');
-                              }
-                            },
-                          ),
-                        ],
+                      SizedBox(width: 5),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            StreamBuilder(
+                              stream:
+                                  databaseReference.child('kepenuhan').onValue,
+                              builder: (BuildContext context,
+                                  AsyncSnapshot snapshot) {
+                                if (snapshot.hasData &&
+                                    snapshot.data!.snapshot.value != null) {
+                                  var stokSampah =
+                                      snapshot.data!.snapshot.value;
+                                  return Text(
+                                    '$stokSampah',
+                                    style: TextStyle(
+                                      fontSize: 40.0,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.white,
+                                    ),
+                                  );
+                                } else {
+                                  return Text('Loading...');
+                                }
+                              },
+                            ),
+                          ],
+                        ),
                       ),
                     ],
                   ),
@@ -154,10 +151,9 @@ class _BeratSampahPageState extends State<BeratSampahPage> {
             ),
           ),
           StreamBuilder(
-            stream: databaseReference.child('stok_sampah').onValue,
+            stream: databaseReference.child('kepenuhan').onValue,
             builder: (BuildContext context, AsyncSnapshot snapshot) {
-              if (snapshot.hasData &&
-                  snapshot.data!.snapshot.value != null) {
+              if (snapshot.hasData && snapshot.data!.snapshot.value != null) {
                 var stokSampah = snapshot.data!.snapshot.value;
                 return Positioned(
                   top: 600,

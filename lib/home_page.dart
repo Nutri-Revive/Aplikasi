@@ -235,9 +235,9 @@ class _HomePageState extends State<HomePage> {
                   children: [
                     createCard(
                       context,
-                      'KELEMBABAN',
+                      'KELEMBABAN UDARA',
                       'assets/kelembapan.png',
-                      'kelembaban',
+                      'kelembaban_udara',
                       ' %RH',
                     ),
                     createCard(
@@ -245,7 +245,7 @@ class _HomePageState extends State<HomePage> {
                       'SUHU',
                       'assets/suhu.png',
                       'suhu',
-                      '°',
+                      '° C',
                     ),
                   ],
                 ),
@@ -256,15 +256,15 @@ class _HomePageState extends State<HomePage> {
                       context,
                       'STOK SAMPAH',
                       'assets/stok_sampah.png',
-                      'stok_sampah',
-                      ' KG',
+                      'kepenuhan',
+                      '',
                     ),
                     createCard(
                       context,
-                      'KETINGGIAN AIR',
+                      'KELEMBABAN TANAH',
                       'assets/kadar_air.png',
-                      'kadar_air',
-                      ' METER',
+                      'kelembaban_tanah',
+                      ' %',
                     ),
                   ],
                 )
@@ -291,7 +291,7 @@ class _HomePageState extends State<HomePage> {
         ),
         child: InkWell(
           onTap: () async {
-            if (title == 'KELEMBABAN') {
+            if (title == 'KELEMBABAN UDARA') {
               Navigator.push(
                 context,
                 MaterialPageRoute(
@@ -309,7 +309,7 @@ class _HomePageState extends State<HomePage> {
                 MaterialPageRoute(
                     builder: (context) => const BeratSampahPage()),
               );
-            } else if (title == 'KETINGGIAN AIR') {
+            } else if (title == 'KELEMBABAN TANAH') {
               Navigator.push(
                 context,
                 MaterialPageRoute(

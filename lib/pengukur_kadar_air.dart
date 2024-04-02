@@ -12,32 +12,6 @@ class PengukurKadarAir extends StatefulWidget {
 class _PengukurKadarAirState extends State<PengukurKadarAir> {
   final databaseReference = FirebaseDatabase.instance.ref();
   var waterNow;
-  int water = 0;
-  int meter = 0;
-
-  void increasewater() {
-    setState(() {
-      water++;
-    });
-  }
-
-  void decreasewater() {
-    print((waterNow as int) - water);
-    if (waterNow > -1) {
-      setState(() {
-        water--;
-      });
-    }
-  }
-
-  void ubahKadarAir() {
-    if (((waterNow as int) + water) > -1) {
-      databaseReference.child('kadar_air').set((waterNow as int) + water);
-      setState(() {
-        water = 0;
-      });
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -89,9 +63,9 @@ class _PengukurKadarAirState extends State<PengukurKadarAir> {
               child: Column(
                 children: [
                   Padding(
-                    padding: EdgeInsets.all(20.0),
+                    padding: EdgeInsets.all(15.0),
                     child: Text(
-                      'KETINGGIAN AIR',
+                      'KELEMBABAN TANAH',
                       style: TextStyle(
                         fontSize: 25.0,
                         fontWeight: FontWeight.bold,
@@ -121,21 +95,22 @@ class _PengukurKadarAirState extends State<PengukurKadarAir> {
                         crossAxisAlignment: CrossAxisAlignment.end,
                         children: [
                           StreamBuilder(
-                            stream:
-                                databaseReference.child('kadar_air').onValue,
+                            stream: databaseReference
+                                .child('kelembaban_tanah')
+                                .onValue,
                             builder:
                                 (BuildContext context, AsyncSnapshot snapshot) {
                               if (snapshot.hasData &&
                                   snapshot.data!.snapshot.value != null) {
                                 var data = snapshot.data!.snapshot.value;
                                 databaseReference
-                                    .child('kadar_air')
+                                    .child('kelembaban_tanah')
                                     .onValue
                                     .listen((event) {
                                   waterNow = event.snapshot.value;
                                 });
                                 return Text(
-                                  '$data METER',
+                                  '$data %',
                                   style: TextStyle(
                                     fontSize: 25.0,
                                     fontWeight: FontWeight.bold,
@@ -152,99 +127,6 @@ class _PengukurKadarAirState extends State<PengukurKadarAir> {
                     ],
                   ),
                 ],
-              ),
-            ),
-          ),
-
-          Positioned(
-            bottom: 275,
-            left: 0,
-            right: 0,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                // Tombol -
-                ElevatedButton(
-                  onPressed: decreasewater,
-                  child: Text(
-                    '-',
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 30,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Color(0xFF8B9D88),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(16),
-                    ),
-                    padding: EdgeInsets.symmetric(
-                        vertical: 10, horizontal: 30), // Atur tinggi dan lebar
-                  ),
-                ),
-                SizedBox(width: 25),
-
-                // Nilai Tinggi Air
-                Container(
-                  child: Center(
-                    child: Text(
-                      '$water',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 50,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                ),
-                SizedBox(width: 25),
-
-                // Tombol +
-                ElevatedButton(
-                  onPressed: increasewater,
-                  child: Text(
-                    '+',
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 30,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Color(0xFF8B9D88),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                    padding: EdgeInsets.symmetric(
-                        vertical: 10, horizontal: 30), // Atur tinggi dan lebar
-                  ),
-                ),
-              ],
-            ),
-          ),
-
-          // Tombol Simpah
-          Positioned(
-            bottom: 180,
-            left: 120,
-            right: 120,
-            child: ElevatedButton(
-              onPressed: ubahKadarAir,
-              child: Text(
-                'Simpan',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 30,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Color(0xFF425537),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                minimumSize: Size(125, 70), // Atur tinggi dan lebar tombol
               ),
             ),
           ),

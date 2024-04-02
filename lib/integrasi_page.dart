@@ -263,13 +263,13 @@ class _HumidityControlState extends State<HumidityControl> {
               ),
               child: Center(
                 child: StreamBuilder(
-                  stream: databaseReference.child('kelembaban').onValue,
+                  stream: databaseReference.child('kelembaban_udara').onValue,
                   builder: (BuildContext context, AsyncSnapshot snapshot) {
                     if (snapshot.hasData &&
                         snapshot.data!.snapshot.value != null) {
                       var data = snapshot.data!.snapshot.value;
                       databaseReference
-                          .child('kelembaban')
+                          .child('kelembaban_udara')
                           .onValue
                           .listen((event) {
                         humidityNow = event.snapshot.value;
@@ -337,7 +337,7 @@ class _CompostControlState extends State<CompostControl> {
           child: Padding(
             padding: const EdgeInsets.only(left: 32.0),
             child: Text(
-              'Atur Bahan Pengompos',
+              'Masukan Berat',
               style: TextStyle(
                 color: Colors.white,
                 fontSize: 22,

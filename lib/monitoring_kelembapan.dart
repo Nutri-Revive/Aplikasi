@@ -83,7 +83,7 @@ class _MonotoringKelembapanPageState extends State<MonotoringKelembapanPage> {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         Text(
-                          'Kelembaban',
+                          'Kelembaban Udara',
                           style: TextStyle(
                               fontSize: 30.0,
                               fontWeight: FontWeight.bold,
@@ -103,7 +103,7 @@ class _MonotoringKelembapanPageState extends State<MonotoringKelembapanPage> {
                                 SizedBox(width: 8.0),
                                 StreamBuilder(
                                   stream: databaseReference
-                                      .child('kelembaban')
+                                      .child('kelembaban_udara')
                                       .onValue,
                                   builder: (BuildContext context,
                                       AsyncSnapshot snapshot) {
